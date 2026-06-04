@@ -1,0 +1,15 @@
+user_id,transaction_date,merchant_name,amount,disputed
+1,2024-01-10,Swiggy,350,false
+1,2024-01-15,BigBazaar,2100,false
+1,2024-01-20,Zomato,480,false
+1,2024-02-05,Amazon,1500,false
+1,2024-02-12,BigBazaar,1800,false
+1,2024-02-18,Swiggy,420,false
+1,2024-03-01,Myntra,3200,false
+1,2024-03-10,Amazon,900,false
+1,2024-03-15,Zomato,310,false
+1,2024-04-01,BigBazaar,2400,false
+2,2024-01-05,DMart,1200,true
+2,2024-01-18,Flipkart,5000,true
+2,2024-02-10,Amazon,800,false
+2,2024-02-20,Swiggy,300,false

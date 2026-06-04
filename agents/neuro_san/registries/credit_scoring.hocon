@@ -1,0 +1,19 @@
+# CreditBridge Multi-Agent Network
+# Defines the 7-agent scoring pipeline using Neuro SAN's AAOSA protocol.
+# The CreditCoordinator is the front-man that orchestrates all sub-agents in parallel.
+
+{
+    "llm_config": {
+        "class": "ollama",
+        "model_name": "llama3",
+        "temperature": 0.1
+    },
+
+    "tools": [
+        # ── Front-Man: CreditCoordinator ────────────────────────────────────────
+        {
+            "name": "CreditCoordinator",
+            "function": {
+                "description": "Orchestrates a full credit scoring pipeline for an applicant. Dispatches to 7 specialized scoring agents and synthesizes a final credit score between 300 and 850.",
+                "parameters": {
+                    "typ

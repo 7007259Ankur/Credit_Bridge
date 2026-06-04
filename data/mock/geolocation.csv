@@ -1,0 +1,12 @@
+user_id,timestamp,city,pincode,location_type
+1,2024-01,Mumbai,400001,home
+1,2024-02,Mumbai,400001,home
+1,2024-03,Mumbai,400001,work
+1,2024-04,Mumbai,400001,home
+1,2024-05,Mumbai,400001,home
+1,2024-06,Mumbai,400001,home
+2,2024-01,Delhi,110001,home
+2,2024-02,Noida,201301,home
+2,2024-03,Gurgaon,122001,work
+2,2024-04,Delhi,110002,home
+2,2024-05,Faridabad,121001,home

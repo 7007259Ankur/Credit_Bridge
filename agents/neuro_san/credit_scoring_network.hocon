@@ -1,0 +1,195 @@
+// CreditBridge — Neuro SAN Agent Network Definition
+// Declarative HOCON config for the 4-layer multi-agent credit scoring pipeline.
+// The CreditCoordinator is the frontman agent that delegates to 6 specialist agents.
+// Each specialist calls a CodedTool (deterministic Python) for its actual scoring logic.
+
+{
+    "llm_config": {
+        "model_name": "ollama/llama3",
+        "ollama_base_url": "http://localhost:11434"
+    },
+
+    "tools": [
+        {
+            "name": "CreditCoordinator",
+            "function": {
+                "description": "You are the CreditBridge Coordinator. Your job is to orchestrate a complete credit assessment for an applicant. You MUST call ALL six specialist agents: CashflowAgent, PhoneBillAgent, EcommerceAgent, PsychometricAgent, MerchantAgent, and GeolocationAgent. After collecting all six sub-scores, call RiskSynthesizerTool to compute the final 300-850 credit score. Return the complete scoring result including every agent's score and explanation."
+            },
+            "instructions": "You are the main coordinator for CreditBridge credit scoring. When given a user_id, you must: 1) Call all six specialist scoring agents to get their sub-scores. 2) Pass all sub-scores to RiskSynthesizerTool. 3) Return the final aggregated score with per-agent breakdowns. Always call all agents — never skip one.",
+            "tools": [
+                "CashflowAgent",
+                "PhoneBillAgent",
+                "EcommerceAgent",
+                "PsychometricAgent",
+                "MerchantAgent",
+                "GeolocationAgent",
+                "RiskSynthesizerTool"
+            ],
+            "allow": {
+                "to_upstream": {
+                    "sly_data": {
+                        "user_id": true,
+                        "run_id": true,
+                        "final_score": true,
+                        "recommendation": true,
+                        "agent_results": true
+                    }
+                }
+            }
+        },
+
+        {
+            "name": "CashflowAgent",
+            "function": {
+                "description": "Analyses bank transaction patterns for cashflow health scoring. Returns a 0-100 sub-score with savings ratio, income stability signals, and plain-English explanation."
+            },
+            "instructions": "You are the Cashflow specialist. Call the CashflowTool with the user_id from sly_data to get cashflow analysis. Report the sub_score, weight (0.25), explanation, signals, and confidence from the tool result.",
+            "tools": ["CashflowTool"],
+            "allow": {
+                "to_upstream": {
+                    "sly_data": {
+                        "user_id": true
+                    }
+                }
+            }
+        },
+
+        {
+            "name": "PhoneBillAgent",
+            "function": {
+                "description": "Analyses telecom bill payment history for payment consistency scoring. Returns a 0-100 sub-score."
+            },
+            "instructions": "You are the Phone Bill specialist. Call PhoneBillTool with the user_id to analyse telecom payment history. Report the sub_score, weight (0.15), explanation, signals, and confidence.",
+            "tools": ["PhoneBillTool"],
+            "allow": {
+                "to_upstream": {
+                    "sly_data": {
+                        "user_id": true
+                    }
+                }
+            }
+        },
+
+        {
+            "name": "EcommerceAgent",
+            "function": {
+                "description": "Analyses e-commerce purchase behaviour including return rates and EMI usage for creditworthiness signals. Returns a 0-100 sub-score."
+            },
+            "instructions": "You are the E-commerce specialist. Call EcommerceTool with the user_id to analyse purchase behaviour. Report the sub_score, weight (0.15), explanation, signals, and confidence.",
+            "tools": ["EcommerceTool"],
+            "allow": {
+                "to_upstream": {
+                    "sly_data": {
+                        "user_id": true
+                    }
+                }
+            }
+        },
+
+        {
+            "name": "PsychometricAgent",
+            "function": {
+                "description": "Analyses psychometric questionnaire answers across financial responsibility dimensions. Returns a 0-100 sub-score."
+            },
+            "instructions": "You are the Psychometric specialist. Call PsychometricTool with the user_id to analyse the applicant's financial behaviour profile from questionnaire answers. Report the sub_score, weight (0.15), explanation, signals, and confidence.",
+            "tools": ["PsychometricTool"],
+            "allow": {
+                "to_upstream": {
+                    "sly_data": {
+                        "user_id": true
+                    }
+                }
+            }
+        },
+
+        {
+            "name": "MerchantAgent",
+            "function": {
+                "description": "Analyses merchant transaction history for business reputation and dispute rate scoring. Returns a 0-100 sub-score."
+            },
+            "instructions": "You are the Merchant specialist. Call MerchantTool with the user_id to score merchant transaction behaviour. Report the sub_score, weight (0.10), explanation, signals, and confidence.",
+            "tools": ["MerchantTool"],
+            "allow": {
+                "to_upstream": {
+                    "sly_data": {
+                        "user_id": true
+                    }
+                }
+            }
+        },
+
+        {
+            "name": "GeolocationAgent",
+            "function": {
+                "description": "Analyses location history for residence stability scoring. Returns a 0-100 sub-score."
+            },
+            "instructions": "You are the Geolocation specialist. Call GeolocationTool with the user_id to score location stability. Report the sub_score, weight (0.10), explanation, signals, and confidence.",
+            "tools": ["GeolocationTool"],
+            "allow": {
+                "to_upstream": {
+                    "sly_data": {
+                        "user_id": true
+                    }
+                }
+            }
+        },
+
+        // ── Coded Tools (deterministic Python — no LLM involved) ─────────────────
+
+        {
+            "name": "CashflowTool",
+            "function": {
+                "description": "Deterministic cashflow scoring using bank transaction CSV data."
+            },
+            "class": "agents.neuro_san.coded_tools.cashflow_tool.CashflowTool"
+        },
+
+        {
+            "name": "PhoneBillTool",
+            "function": {
+                "description": "Deterministic phone bill scoring using telecom payment CSV data."
+            },
+            "class": "agents.neuro_san.coded_tools.phone_bill_tool.PhoneBillTool"
+        },
+
+        {
+            "name": "EcommerceTool",
+            "function": {
+                "description": "Deterministic e-commerce scoring using purchase history CSV data."
+            },
+            "class": "agents.neuro_san.coded_tools.ecommerce_tool.EcommerceTool"
+        },
+
+        {
+            "name": "PsychometricTool",
+            "function": {
+                "description": "Deterministic psychometric scoring from questionnaire answers."
+            },
+            "class": "agents.neuro_san.coded_tools.psychometric_tool.PsychometricTool"
+        },
+
+        {
+            "name": "MerchantTool",
+            "function": {
+                "description": "Deterministic merchant transaction scoring using merchant CSV data."
+            },
+            "class": "agents.neuro_san.coded_tools.merchant_tool.MerchantTool"
+        },
+
+        {
+            "name": "GeolocationTool",
+            "function": {
+                "description": "Deterministic geolocation stability scoring using location CSV data."
+            },
+            "class": "agents.neuro_san.coded_tools.geolocation_tool.GeolocationTool"
+        },
+
+        {
+            "name": "RiskSynthesizerTool",
+            "function": {
+                "description": "Aggregates all agent sub-scores into a final 300-850 credit score using weighted average formula."
+            },
+            "class": "agents.neuro_san.coded_tools.risk_synthesizer_tool.RiskSynthesizerTool"
+        }
+    ]
+}

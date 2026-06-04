@@ -1,0 +1,12 @@
+user_id,order_date,amount,category,returned,paid_emi
+1,2024-01-05,1200,electronics,false,false
+1,2024-01-15,300,clothing,false,false
+1,2024-02-03,5000,appliances,false,true
+1,2024-02-20,150,books,false,false
+1,2024-03-01,800,sports,false,false
+1,2024-03-10,2500,electronics,false,true
+1,2024-04-05,400,clothing,true,false
+1,2024-05-01,1800,appliances,false,true
+2,2024-01-10,3000,electronics,true,false
+2,2024-01-25,500,clothing,true,false
+2,2024-02-14,1200,appliances,false,false
