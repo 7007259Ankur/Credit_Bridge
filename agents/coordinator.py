@@ -15,6 +15,9 @@ is unavailable — useful for unit tests and CI.
 import json
 import logging
 import os
+from dotenv import load_dotenv
+load_dotenv(os.path.join(os.path.dirname(__file__), "../.env"))
+
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Dict, List
 

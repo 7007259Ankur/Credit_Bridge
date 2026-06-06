@@ -12,8 +12,8 @@ export function useRunStatus(runId: number | null) {
         queryKey: ['run-status', runId],
         queryFn: () => api.get(`/scoring/${runId}/status`).then((r) => r.data),
         enabled: !!runId,
-        refetchInterval: (data: any) =>
-            data?.status === 'completed' || data?.status === 'failed' ? false : 2000,
+        refetchInterval: (query: any) =>
+            query.state.data?.status === 'completed' || query.state.data?.status === 'failed' ? false : 2000,
     })
 }
 

@@ -5,9 +5,8 @@ WORKDIR /app
 RUN pip install uv
 
 COPY pyproject.toml .
-RUN uv pip install --system -e .
-
 COPY . .
+RUN uv pip install --system -e .
 
 EXPOSE 8000
 

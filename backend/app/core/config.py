@@ -1,5 +1,4 @@
 from pydantic_settings import BaseSettings
-from pydantic import field_validator
 from typing import List
 
 
@@ -30,7 +29,7 @@ class Settings(BaseSettings):
     OLLAMA_MODEL: str = "llama3"
 
     # Data
-    MOCK_DATA_PATH: str = "/data/mock"
+    MOCK_DATA_PATH: str = "../data/mock"
 
     @property
     def cors_origins_list(self) -> List[str]:

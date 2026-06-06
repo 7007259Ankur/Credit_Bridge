@@ -5,8 +5,9 @@
 
 {
     "llm_config": {
-        "model_name": "ollama/llama3",
-        "ollama_base_url": "http://localhost:11434"
+        "model_name": ${?LLM_MODEL_NAME},
+        "openai_base_url": ${?LLM_BASE_URL},
+        "api_key": ${?GROQ_API_KEY}
     },
 
     "tools": [

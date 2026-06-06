@@ -23,7 +23,7 @@ def register(db: Session, req: RegisterRequest) -> TokenResponse:
         full_name=req.full_name,
         role=req.role,
     )
-    audit_repo.log(db, "user.registered", user_id=user.id, metadata={"role": req.role})
+    audit_repo.log(db, "user.registered", user_id=user.id, metadata={"role": req.role.value if hasattr(req.role, 'value') else req.role})
     return _issue_tokens(user)
 
 
@@ -55,7 +55,7 @@ def refresh(db: Session, refresh_token: str) -> TokenResponse:
 
 
 def _issue_tokens(user) -> TokenResponse:
-    data = {"sub": str(user.id), "role": user.role}
+    data = {"sub": str(user.id), "role": user.role.value if hasattr(user.role, 'value') else user.role}
     return TokenResponse(
         access_token=create_access_token(data),
         refresh_token=create_refresh_token(data),

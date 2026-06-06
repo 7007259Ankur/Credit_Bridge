@@ -29,7 +29,7 @@ services:
 
   celery_worker:
     build: ./backend
-    command: celery -A app.celery_app worker --loglevel=info --concurrency=4
+    command: celery -A app.celery_app:celery_app worker --loglevel=info --concurrency=4
     environment:
       DATABASE_URL: postgresql://cb_user:cb_pass@postgres:5432/creditbridge
       REDIS_URL: redis://redis:6379/0

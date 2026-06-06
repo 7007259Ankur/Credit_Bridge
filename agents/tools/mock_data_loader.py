@@ -13,6 +13,7 @@ def load_mock(filename: str, user_id: int) -> pd.DataFrame:
     if not os.path.exists(path):
         return pd.DataFrame()
     df = pd.read_csv(path)
+    df = df.replace({"true": True, "false": False, "True": True, "False": False})
     if "user_id" in df.columns:
         return df[df["user_id"] == user_id].copy()
     return df
@@ -44,11 +45,14 @@ def load_psychometric(user_id: int) -> dict:
     import json
     from app.core.config import settings
 
-    r = redis.from_url(settings.REDIS_URL)
-    key = f"psychometric:{user_id}"
-    raw = r.get(key)
-    if raw:
-        return json.loads(raw)
+    try:
+        r = redis.from_url(settings.REDIS_URL)
+        key = f"psychometric:{user_id}"
+        raw = r.get(key)
+        if raw:
+            return json.loads(raw)
+    except Exception as e:
+        print(f"Redis fallback for psychometric: {e}")
     # fallback to CSV
     df = load_mock("psychometric.csv", user_id)
     if df.empty:
