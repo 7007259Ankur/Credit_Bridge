@@ -97,9 +97,3 @@ Weights are configurable from the Admin Panel.
 ```
 final_score = 300 + (weighted_avg_sub_score / 100) × 550
 ```
-
-## Running Tests
-```bash
-cd backend
-pytest tests/ -v
-```
